@@ -19,84 +19,24 @@ root = Path(__file__).parent.parent
 
 SKILLS = [
     {
-        "name": "odqa",
+        "name": "eng_faq",
         "protocol": "http",
         "host": "127.0.0.1",
         "port": 2080,
         "endpoint": "skill",
-        "path": "skills/text_qa/agent_ru_odqa_retr_noans_rubert_infer.json",
+        "path": "skills/autofaq/aiml.json",
         "env": {
             "CUDA_VISIBLE_DEVICES": ""
         },
         "gpu": False
     },
-    {
-        "name": "chitchat",
-        "protocol": "http",
-        "host": "127.0.0.1",
-        "port": 2081,
-        "endpoint": "skill",
-        "path": "skills/ranking_chitchat/agent_ranking_chitchat_2staged_tfidf_smn_v4_prep.json",
-        "env": {
-            "CUDA_VISIBLE_DEVICES": ""
-        },
-        "profile_handler": True,
-        "gpu": False
-    }
 ]
 
 ANNOTATORS = [
-    {
-        "name": "ner",
-        "protocol": "http",
-        "host": "127.0.0.1",
-        "port": 2083,
-        "endpoint": "skill",
-        "path": "annotators/ner/preproc_ner_rus.json",
-        "env": {
-            "CUDA_VISIBLE_DEVICES": ""
-        },
-        "gpu": False
-    },
-    {
-        "name": "sentiment",
-        "protocol": "http",
-        "host": "127.0.0.1",
-        "port": 2084,
-        "endpoint": "skill",
-        "path": "annotators/sentiment/preproc_rusentiment.json",
-        "env": {
-            "CUDA_VISIBLE_DEVICES": ""
-        },
-        "gpu": False
-    },
-    {
-        "name": "obscenity",
-        "protocol": "http",
-        "host": "127.0.0.1",
-        "port": 2088,
-        "endpoint": "skill",
-        "path": "annotators/obscenity/obscenity_classifier.json",
-        "env": {
-            "CUDA_VISIBLE_DEVICES": ""
-        },
-        "gpu": False
-    }
 ]
 
 SKILL_SELECTORS = [
-    {
-        "name": "chitchat_odqa",
-        "protocol": "http",
-        "host": "127.0.0.1",
-        "port": 2082,
-        "endpoint": "skill",
-        "path": "skill_selectors/chitchat_odqa_selector/sselector_chitchat_odqa.json",
-        "env": {
-            "CUDA_VISIBLE_DEVICES": ""
-        },
-        "gpu": False
-    }
+
 ]
 
 RESPONSE_SELECTORS = [

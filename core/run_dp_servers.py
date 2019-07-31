@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 from itertools import islice
 from typing import Union, Optional, Dict
-from logging import getLogger
+from logging import getLogger, basicConfig
 import ssl
 import argparse
 
@@ -17,6 +17,8 @@ from deeppavlov.core.common.chainer import Chainer
 # from core.config import ANNOTATORS, SKILL_SELECTORS, SKILLS, RESPONSE_SELECTORS, POSTPROCESSORS
 
 # from utils.server_utils.server import skill_server
+
+basicConfig(format='[%(levelname)s] %(asctime)s (%(pathname)s:%(lineno)d) %(message)s')
 log = getLogger(__name__)
 app = Flask(__name__)
 Swagger(app)
@@ -74,6 +76,7 @@ def interact_skill(model: Chainer, batch_size: Optional[int] = None):
         try:
             result = model(batch)
         except Exception as e:
+            log.exception("exception")
             log.error(f'Got an exception when trying to infer the model: {type(e).__name__}: {e}')
             return jsonify({
                 'error': f'{type(e).__name__}: {e}'
