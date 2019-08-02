@@ -170,3 +170,4 @@ Agent can run both from container and from a local machine.
 2. Change `server_name` to required and put `ssl_certificate` to required dir in nginx.conf.
 3. `docker-compose -f docker-compose.yml -f nginx.yml build`
 4. `docker-compose -f docker-compose.yml -f nginx.yml up`
+5. Put index.js file into Alexa Developer Console Code section and redeploy Alexa.
