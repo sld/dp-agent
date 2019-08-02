@@ -142,7 +142,7 @@ class DockerComposeConfig:
 
     @property
     def config(self):
-        config_dict = {'version': '2.1', 'services': {}}
+        config_dict = {'version': '3', 'services': {}}
         self.add_dependencies_to_agent()
         for container in chain(self.skills, self.database):
             config_dict['services'].update(container.config)

@@ -6,6 +6,7 @@ services:
     ports: ['28888:8888']
     tty: true
     volumes: ['.:/dp-agent']
+    command: python3 -m core.run -ch http_client
   eng_faq:
     build:
       args: {gpu: 'false', skill_endpoint: skill, skillconfig: skills/autofaq/tfidf_english.json,
@@ -22,4 +23,4 @@ services:
     image: mongo:3.2.0
     ports: ['27017:27017']
     volumes: ['/var/run/docker.sock:/var/run/docker.sock']
-version: '2.1'
+version: '3'

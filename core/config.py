@@ -24,7 +24,7 @@ SKILLS = [
         "host": "127.0.0.1",
         "port": 2080,
         "endpoint": "skill",
-        "path": "skills/autofaq/aiml.json",
+        "path": "skills/autofaq/tfidf_english.json",
         "env": {
             "CUDA_VISIBLE_DEVICES": ""
         },
