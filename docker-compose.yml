@@ -8,7 +8,7 @@ services:
     volumes: ['.:/dp-agent']
   eng_faq:
     build:
-      args: {gpu: 'false', skill_endpoint: skill, skillconfig: skills/autofaq/aiml.json,
+      args: {gpu: 'false', skill_endpoint: skill, skillconfig: skills/autofaq/tfidf_english.json,
         skillhost: 0.0.0.0, skillport: 2080}
       context: ./
       dockerfile: dockerfile_skill_basic

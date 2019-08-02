@@ -9,12 +9,24 @@
     "class_name": "data_learning_iterator"
   },
   "chainer": {
-    "in": "q",
+    "in": "dialogs",
     "in_y": "y",
     "pipe": [
       {
+        "class_name": "core.state_parsers.state_parser:DialogsParser",
+        "in": ["dialogs"],
+        "out": [
+          "last_utterances",
+          "last_annotations",
+          "utterances_histories",
+          "annotations_histories",
+          "dialog_ids",
+          "user_ids"
+        ]
+      },
+      {
         "class_name": "stream_spacy_tokenizer",
-        "in": "q",
+        "in": "last_utterances",
         "id": "my_tokenizer",
         "lemmas": true,
         "out": "q_token_lemmas"
@@ -59,7 +71,7 @@
           "y_ids"
         ],
         "out": [
-          "y_pred_proba"
+          "y_proba"
         ],
         "class_name": "sklearn_component",
         "main": true,
@@ -71,20 +83,26 @@
         "penalty": "l2"
       },
       {
-        "in": "y_pred_proba",
+        "in": "y_proba",
         "out": "y_pred_ids",
         "class_name": "proba2labels",
         "max_proba": true
       },
       {
         "in": "y_pred_ids",
-        "out": "y_pred_answers",
+        "out": "text_batch",
         "ref": "answers_vocab"
+      },
+      {
+        "info": "Return top1 response",
+        "class_name": "skills.autofaq.top1_retriever:Top1Retriever",
+        "in": ["text_batch", "y_proba"],
+        "out": ["text", "confidence"]
       }
     ],
     "out": [
-      "y_pred_answers",
-      "y_pred_proba"
+      "text",
+      "confidence"
     ]
   },
   "train": {
