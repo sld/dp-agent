@@ -1,26 +1,42 @@
 services:
   agent:
-    build: {context: ./, dockerfile: dockerfile_agent}
+    build:
+      context: ./
+      dockerfile: dockerfile_agent
     container_name: agent
-    depends_on: [eng_faq, mongo]
-    ports: ['28888:8888']
+    depends_on:
+    - eng_faq
+    - mongo
+    ports:
+    - 28888:8888
     tty: true
-    volumes: ['.:/dp-agent']
-    command: python3 -m core.run -ch http_client
+    volumes:
+    - .:/dp-agent
   eng_faq:
     build:
-      args: {gpu: 'false', skill_endpoint: skill, skillconfig: skills/autofaq/tfidf_english.json,
-        skillhost: 0.0.0.0, skillport: 2080}
+      args:
+        gpu: 'false'
+        skill_endpoint: skill
+        skillconfig: skills/autofaq/tfidf_english.json
+        skillhost: 0.0.0.0
+        skillport: 2080
       context: ./
       dockerfile: dockerfile_skill_basic
     container_name: eng_faq
-    environment: [CUDA_VISIBLE_DEVICES=""]
-    ports: ['2080:2080']
+    environment:
+    - CUDA_VISIBLE_DEVICES=""
+    ports:
+    - 2080:2080
     tty: true
-    volumes: ['.:/dp-agent', '${EXTERNAL_FOLDER}/dp_logs:/logs', '${EXTERNAL_FOLDER}/.deeppavlov:/root/.deeppavlov']
+    volumes:
+    - .:/dp-agent
+    - ${EXTERNAL_FOLDER}/dp_logs:/logs
+    - ${EXTERNAL_FOLDER}/.deeppavlov:/root/.deeppavlov
   mongo:
     command: mongod
     image: mongo:3.2.0
-    ports: ['27017:27017']
-    volumes: ['/var/run/docker.sock:/var/run/docker.sock']
+    ports:
+    - 27017:27017
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
 version: '3'
