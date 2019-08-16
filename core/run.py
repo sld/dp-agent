@@ -100,9 +100,11 @@ def run():
     logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.WARNING)
 
     state_manager = StateManager()
-
-    anno_names, anno_urls = zip(
-        *[(annotator['name'], annotator['url']) for annotator in ANNOTATORS])
+    if ANNOTATORS:
+        anno_names, anno_urls = zip(
+            *[(annotator['name'], annotator['url']) for annotator in ANNOTATORS])
+    else:
+        anno_names, anno_urls = None, None
     preprocessor = Service(
         rest_caller=RestCaller(max_workers=MAX_WORKERS, names=anno_names, urls=anno_urls))
     postprocessor = DefaultPostprocessor()

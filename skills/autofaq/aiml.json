@@ -1,0 +1,56 @@
+{
+  "chainer": {
+    "in": "dialogs",
+    "out": [
+      "text",
+      "confidence"
+    ],
+    "pipe": [
+      {
+        "class_name": "core.state_parsers.state_parser:DialogsParser",
+        "in": ["dialogs"],
+        "out": [
+          "last_utterances",
+          "last_annotations",
+          "utterances_histories",
+          "annotations_histories",
+          "dialog_ids",
+          "user_ids"
+        ]
+      },
+      {
+        "class_name": "aiml_skill",
+        "path_to_aiml_scripts": "{DOWNLOADS_PATH}/aiml_scripts",
+        "positive_confidence": 0.66,
+        "null_response": "I don't know",
+        "null_confidence": 0.33,
+        "in": [
+          "last_utterances",
+          "utterances_histories",
+          "annotations_histories"
+        ],
+        "out": [
+          "text",
+          "confidence",
+          "output_states_batch"
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "variables": {
+      "ROOT_PATH": "~/.deeppavlov",
+      "DOWNLOADS_PATH": "{ROOT_PATH}/downloads",
+      "MODELS_PATH": "{ROOT_PATH}/models"
+    },
+    "requirements": [
+      "{DEEPPAVLOV_PATH}/requirements/aiml_skill.txt"
+    ],
+    "download": [
+      {
+        "url": "http://files.deeppavlov.ai/aiml_skill/aiml_scripts.tar.gz",
+        "subdir": "{DOWNLOADS_PATH}"
+      }
+    ]
+  }
+}

@@ -12,25 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
+from logging import getLogger
+from deeppavlov.core.models.estimator import Component
 
-from deeppavlov.core.models.component import Component
+logger = getLogger(__name__)
 
 
-class FirstElementExtractor(Component):
-    """Component for extracting the first element from each list in a batch of lists.
-
-    """
-    def __init__(self, *args, **kwargs):
+class Top1Retriever(Component):
+    def __init__(self, **kwargs):
         pass
 
-    def __call__(self, batch: List[List]):
-        """Recursively search for strings in a list and convert them to lowercase
-
-        Args:
-            batch: a string or a list containing strings at some level of nesting
-
-        Returns:
-            the same structure where all strings are converted to lowercase
+    def __call__(self, text_batch, y_proba):
         """
-        return [el[0] for el in batch]
+        Get batch of contexts, retrieve their corresponded responses,
+        return batch of lists of candidates and batch of model inputs.
+
+        context: List[List[str]]
+        index: List[List[str]]
+        """
+        logger.info("{} {}".format(text_batch, y_proba))
+        return text_batch[0], y_proba[0]

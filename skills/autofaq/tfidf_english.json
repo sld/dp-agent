@@ -1,0 +1,129 @@
+{
+  "dataset_reader": {
+    "class_name": "faq_reader",
+    "x_col_name": "Question",
+    "y_col_name": "Answer",
+    "data_url": "http://files.deeppavlov.ai/faq/school/faq_school_en.csv"
+  },
+  "dataset_iterator": {
+    "class_name": "data_learning_iterator"
+  },
+  "chainer": {
+    "in": "dialogs",
+    "in_y": "y",
+    "pipe": [
+      {
+        "class_name": "core.state_parsers.state_parser:DialogsParser",
+        "in": ["dialogs"],
+        "out": [
+          "last_utterances",
+          "last_annotations",
+          "utterances_histories",
+          "annotations_histories",
+          "dialog_ids",
+          "user_ids"
+        ]
+      },
+      {
+        "class_name": "stream_spacy_tokenizer",
+        "in": "last_utterances",
+        "id": "my_tokenizer",
+        "lemmas": true,
+        "out": "q_token_lemmas"
+      },
+      {
+        "ref": "my_tokenizer",
+        "in": "q_token_lemmas",
+        "out": "q_lem"
+      },
+      {
+        "in": [
+          "q_lem"
+        ],
+        "out": [
+          "q_vect"
+        ],
+        "fit_on": [
+          "q_lem"
+        ],
+        "id": "tfidf_vec",
+        "class_name": "sklearn_component",
+        "save_path": "{MODELS_PATH}/faq/mipt/en_mipt_faq_v4/tfidf.pkl",
+        "load_path": "{MODELS_PATH}/faq/mipt/en_mipt_faq_v4/tfidf.pkl",
+        "model_class": "sklearn.feature_extraction.text:TfidfVectorizer",
+        "infer_method": "transform"
+      },
+      {
+        "id": "answers_vocab",
+        "class_name": "simple_vocab",
+        "fit_on": [
+          "y"
+        ],
+        "save_path": "{MODELS_PATH}/faq/mipt/en_mipt_faq_v4/en_mipt_answers.dict",
+        "load_path": "{MODELS_PATH}/faq/mipt/en_mipt_faq_v4/en_mipt_answers.dict",
+        "in": "y",
+        "out": "y_ids"
+      },
+      {
+        "in": "q_vect",
+        "fit_on": [
+          "q_vect",
+          "y_ids"
+        ],
+        "out": [
+          "y_proba"
+        ],
+        "class_name": "sklearn_component",
+        "main": true,
+        "save_path": "{MODELS_PATH}/faq/mipt/en_mipt_faq_v4/logreg.pkl",
+        "load_path": "{MODELS_PATH}/faq/mipt/en_mipt_faq_v4/logreg.pkl",
+        "model_class": "sklearn.linear_model:LogisticRegression",
+        "infer_method": "predict_proba",
+        "C": 1000,
+        "penalty": "l2"
+      },
+      {
+        "in": "y_proba",
+        "out": "y_pred_ids",
+        "class_name": "proba2labels",
+        "max_proba": true
+      },
+      {
+        "in": "y_pred_ids",
+        "out": "text_batch",
+        "ref": "answers_vocab"
+      },
+      {
+        "info": "Return top1 response",
+        "class_name": "skills.autofaq.top1_retriever:Top1Retriever",
+        "in": ["text_batch", "y_proba"],
+        "out": ["text", "confidence"]
+      }
+    ],
+    "out": [
+      "text",
+      "confidence"
+    ]
+  },
+  "train": {
+    "evaluation_targets": [],
+    "class_name": "fit_trainer"
+  },
+  "metadata": {
+    "variables": {
+      "ROOT_PATH": "~/.deeppavlov",
+      "DOWNLOADS_PATH": "{ROOT_PATH}/downloads",
+      "MODELS_PATH": "{ROOT_PATH}/models"
+    },
+    "requirements": [
+      "{DEEPPAVLOV_PATH}/requirements/spacy.txt",
+      "{DEEPPAVLOV_PATH}/requirements/en_core_web_sm.txt"
+    ],
+    "download": [
+      {
+        "url": "http://files.deeppavlov.ai/faq/mipt/en_mipt_faq_v4.tar.gz",
+        "subdir": "{MODELS_PATH}/faq/mipt"
+      }
+    ]
+  }
+}
